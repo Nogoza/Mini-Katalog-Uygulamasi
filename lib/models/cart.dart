@@ -26,6 +26,10 @@ class Cart {
   }
 
   double get totalPrice {
-    return _items.fold(0, (sum, item) => sum + item.price);
+    return _items.fold(0.0, (sum, item) {
+      final priceString = item.price.replaceAll(RegExp(r'[^0-9.]'), '');
+      final price = double.tryParse(priceString) ?? 0.0;
+      return sum + price;
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import '../models/product.dart';
 import '../models/cart.dart';
 
@@ -10,140 +11,138 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name, overflow: TextOverflow.ellipsis),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.pushNamed(context, '/cart');
-            },
-          )
-        ],
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 300,
-                    color: Colors.white,
-                    child: Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image, size: 100, color: Colors.grey),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(CupertinoIcons.back, color: Colors.black, size: 20),
+                  label: const Text("Back", style: TextStyle(color: Colors.black, fontSize: 16)),
+                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                ),
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Image Container
+                    Container(
+                      width: double.infinity,
+                      height: 300,
+                      color: Colors.grey.shade100,
+                      child: Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: Image.network(
+                          product.imageUrl,
+                          fit: BoxFit.contain,
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  product.name,
-                                  style: const TextStyle(
-                                      fontSize: 22, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Text(
-                                "${product.price} TL",
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          Text(
+                            product.name,
+                            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
                           ),
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              product.category.toUpperCase(),
-                              style: TextStyle(
-                                  color: Colors.blue[800],
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                          const SizedBox(height: 4),
+                          Text(
+                            product.tagline,
+                            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 24),
                           const Text(
-                            "Açıklama",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            "Description",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           Text(
                             product.description,
-                            style: const TextStyle(
-                                fontSize: 16, height: 1.5, color: Colors.black87),
+                            style: TextStyle(fontSize: 14, height: 1.5, color: Colors.grey.shade700),
                           ),
-                          const Spacer(),
-                          const SizedBox(height: 20),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () {
-                                Cart().addItem(product);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('${product.name} sepete eklendi!'),
-                                    duration: const Duration(seconds: 2),
-                                    action: SnackBarAction(
-                                      label: 'Sepete Git',
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, '/cart');
-                                      },
+                          const SizedBox(height: 24),
+                          if (product.specs.isNotEmpty) ...[
+                            const Text(
+                              "Specifications",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 12),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: product.specs.entries.map((e) {
+                                  return Container(
+                                    margin: const EdgeInsets.only(right: 12),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      border: Border.all(color: Colors.grey.shade200),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.add_shopping_cart),
-                              label: const Text(
-                                "Sepete Ekle",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          e.key.toUpperCase(),
+                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey.shade500),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          e.value,
+                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ),
-                          ),
+                          ],
+                          const SizedBox(height: 40), 
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.grey.shade200)),
+        ),
+        child: SafeArea(
+          child: SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: ElevatedButton(
+              onPressed: () {
+                Cart().addItem(product);
+                Navigator.pushNamed(context, '/cart');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              child: const Text("Checkout", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 }

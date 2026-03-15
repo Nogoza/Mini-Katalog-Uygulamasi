@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import '../models/product.dart';
-
 import '../widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Product> products = [];
   bool isLoading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -23,109 +25,115 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadProducts() async {
     try {
-      final String response = await DefaultAssetBundle.of(context).loadString('assets/data.json');
-      final data = await json.decode(response) as List<dynamic>;
-      setState(() {
-        products = data.map((json) => Product.fromJson(json)).toList();
-        isLoading = false;
-      });
+      final response = await http.get(Uri.parse('https://wantapi.com/products.php'));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['status'] == 'success' && jsonData['data'] != null) {
+          final List<dynamic> data = jsonData['data'];
+          setState(() {
+            products = data.map((json) => Product.fromJson(json)).toList();
+            isLoading = false;
+          });
+        } else {
+          setState(() => {isLoading = false, errorMessage = 'API error.'});
+        }
+      } else {
+        setState(() => {isLoading = false, errorMessage = 'Server error.'});
+      }
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      debugPrint("Error loading products: $e");
+      setState(() => {isLoading = false, errorMessage = 'Connection error.'});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine the feature products (e.g., first 5)
-    final featuredProducts = products.take(5).toList();
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Mini Katalog"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.pushNamed(context, '/cart').then((_) {
-                // Refresh when coming back from cart to update state if necessary
-                setState(() {});
-              });
-            },
-          )
-        ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator(color: Colors.black))
+            : errorMessage != null
+                ? Center(child: Text(errorMessage!))
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Discover",
+                                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "Find your perfect device.",
+                                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              icon: const Icon(CupertinoIcons.bag),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/cart').then((_) => setState(() {}));
+                              },
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Search Bar
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(CupertinoIcons.search, color: Colors.grey.shade500, size: 20),
+                              const SizedBox(width: 8),
+                              Text("Search products", style: TextStyle(color: Colors.grey.shade500, fontSize: 15)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Banner
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            'assets/banner.png',
+                            width: double.infinity,
+                            height: 100,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(height: 100, color: Colors.grey.shade200),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: GridView.builder(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 15,
+                            ),
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              return ProductCard(product: products[index]);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                   // Gorsel Asset (Banner)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/banner.png',
-                        width: double.infinity,
-                        height: 150,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                           return Container(
-                             width: double.infinity,
-                             height: 150,
-                             color: Colors.grey[300],
-                             child: const Center(child: Text("Banner Image", style: TextStyle(color: Colors.black54))),
-                           );
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Text("Öne Çıkanlar", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  ),
-                  // ListView.builder kullanımı (Yatay)
-                  SizedBox(
-                    height: 220,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: featuredProducts.length,
-                      itemBuilder: (context, index) {
-                        return SizedBox(
-                          width: 160,
-                          child: ProductCard(product: featuredProducts[index]),
-                        );
-                      },
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Text("Tüm Ürünler", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  ),
-                  // GridView kullanımı
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.65,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      return ProductCard(product: products[index]);
-                    },
-                  ),
-                ],
-              ),
-            ),
     );
   }
 }

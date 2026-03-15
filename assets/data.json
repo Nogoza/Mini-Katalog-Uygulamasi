@@ -4,7 +4,7 @@
     "name": "Seyahat Sırt Çantası",
     "description": "Fjallraven - Foldsack No. 1 Sırt Çantası, 15 dizüstü bilgisayara uyar. Günlük kullanım ve yürüyüş için ideal.",
     "price": 109.95,
-    "imageUrl": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+    "imageUrl": "https://picsum.photos/id/1015/200/300",
     "category": "men's clothing"
   },
   {
@@ -12,7 +12,7 @@
     "name": "Erkek Tişört (Dar Kesim)",
     "description": "Tam uyum. Rahat kullanım için dar kesim. Daha dökümlü tercih ederseniz bir beden büyük sipariş edin.",
     "price": 22.3,
-    "imageUrl": "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
+    "imageUrl": "https://picsum.photos/id/1005/200/300",
     "category": "men's clothing"
   },
   {
@@ -20,7 +20,7 @@
     "name": "Pamuk Ceket",
     "description": "Erkek pamuklu ceket rüzgarlık. Şık tasarım. Çok cepli kullanım.",
     "price": 55.99,
-    "imageUrl": "https://fakestoreapi.com/img/71li-ujtlVG._AC_UX679_.jpg",
+    "imageUrl": "https://picsum.photos/id/1025/200/300",
     "category": "men's clothing"
   },
   {
@@ -28,7 +28,7 @@
     "name": "Slim Fit Uzun Kollu Gömlek",
     "description": "Renkli düğme detaylı ince kesim gömlek. Günlük ve ofis kullanımı için uygun.",
     "price": 15.99,
-    "imageUrl": "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg",
+    "imageUrl": "https://picsum.photos/id/103/200/300",
     "category": "men's clothing"
   },
   {
@@ -36,7 +36,7 @@
     "name": "Kısa Elbise (Kadın)",
     "description": "Rahat ve şık bir bahar/yaz elbisesi. Günlük giyim için ideal.",
     "price": 12.99,
-    "imageUrl": "https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg",
+    "imageUrl": "https://picsum.photos/id/1035/200/300",
     "category": "women's clothing"
   },
   {
@@ -44,7 +44,7 @@
     "name": "Kadın Deri Ceket",
     "description": "Suni deri motosiklet ceketi. Yüksek kaliteli. Şık ve zarif.",
     "price": 29.95,
-    "imageUrl": "https://fakestoreapi.com/img/81XH0e8fefL._AC_UY879_.jpg",
+    "imageUrl": "https://picsum.photos/id/1045/200/300",
     "category": "women's clothing"
   },
   {
@@ -52,7 +52,7 @@
     "name": "Altın Kaplama Yüzük",
     "description": "Kadınlar için zarif altın kaplama kalp yüzük. Hediye olarak mükemmel bir seçenek.",
     "price": 9.99,
-    "imageUrl": "https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_.jpg",
+    "imageUrl": "https://picsum.photos/id/1055/200/300",
     "category": "jewelery"
   },
   {
@@ -60,7 +60,7 @@
     "name": "Gümüş Taşlı Küpe",
     "description": "Klasik tasarım gümüş küpe. Gümüş yapısı ile uzun ömürlü ve zarif.",
     "price": 10.99,
-    "imageUrl": "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg",
+    "imageUrl": "https://picsum.photos/id/1065/200/300",
     "category": "jewelery"
   },
   {
@@ -68,7 +68,7 @@
     "name": "1TB Harici Sabit Disk",
     "description": "WD Elements 1TB taşınabilir sabit disk. USB 3.0 ile hızlı veri aktarımı.",
     "price": 64.0,
-    "imageUrl": "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg",
+    "imageUrl": "https://picsum.photos/id/160/200/300",
     "category": "electronics"
   },
   {
@@ -76,7 +76,7 @@
     "name": "Sandalisk SSD 1TB",
     "description": "Daha hızlı performans için SanDisk SSD. PC ve Mac için uyumlu.",
     "price": 109.0,
-    "imageUrl": "https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_.jpg",
+    "imageUrl": "https://picsum.photos/id/175/200/300",
     "category": "electronics"
   }
 ]
