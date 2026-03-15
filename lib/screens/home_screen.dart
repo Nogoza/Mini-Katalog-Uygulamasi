@@ -14,13 +14,38 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Product> products = [];
+  List<Product> filteredProducts = [];
   bool isLoading = true;
   String? errorMessage;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadProducts();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        filteredProducts = List.from(products);
+      } else {
+        filteredProducts = products.where((p) {
+          return p.name.toLowerCase().contains(query) ||
+                 p.description.toLowerCase().contains(query) ||
+                 p.tagline.toLowerCase().contains(query);
+        }).toList();
+      }
+    });
   }
 
   Future<void> _loadProducts() async {
@@ -32,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final List<dynamic> data = jsonData['data'];
           setState(() {
             products = data.map((json) => Product.fromJson(json)).toList();
+            filteredProducts = List.from(products);
             isLoading = false;
           });
         } else {
@@ -89,17 +115,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 20),
                         // Search Bar
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(
-                            children: [
-                              Icon(CupertinoIcons.search, color: Colors.grey.shade500, size: 20),
-                              const SizedBox(width: 8),
-                              Text("Search products", style: TextStyle(color: Colors.grey.shade500, fontSize: 15)),
-                            ],
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(CupertinoIcons.search, color: Colors.grey.shade500, size: 20),
+                              hintText: "Search products",
+                              hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 15),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -124,9 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisSpacing: 15,
                               mainAxisSpacing: 15,
                             ),
-                            itemCount: products.length,
+                            itemCount: filteredProducts.length,
                             itemBuilder: (context, index) {
-                              return ProductCard(product: products[index]);
+                              return ProductCard(product: filteredProducts[index]);
                             },
                           ),
                         ),

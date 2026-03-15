@@ -35,7 +35,7 @@ class Product {
       description: json['description'] ?? '',
       price: json['price'] ?? '',
       currency: json['currency'] ?? 'USD',
-      imageUrl: json['image'] != null 
+      imageUrl: json['image'] != null
           ? 'https://wsrv.nl/?url=${json['image'].replaceFirst(RegExp(r'^https?://'), '')}'
           : 'https://via.placeholder.com/150',
       specs: specsMap,
